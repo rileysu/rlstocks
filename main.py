@@ -7,13 +7,13 @@ from trading_environment import TradingEnvironment
 env = TradingEnvironment()
 
 model = DDPG("MlpPolicy", env, verbose=2)
-model.learn(total_timesteps=1)
+#model.learn(total_timesteps=1)
 
 obs = env.reset()
-for i in range(10):
+for i in range(20):
     action, _states = model.predict(obs, deterministic=True)
     obs, reward, done, info = env.step(action)
-    #env.render()
+    env.render()
     print(action)
     if done:
       obs = env.reset()

@@ -13,7 +13,7 @@ class TradingEnvironment(gym.Env):
     # Action Kinds = [Sell < -0.33, Hold otherwise, Buy > 0.33]
     # Quantity = Percentage of total money
     # Action Format = [ActionKind, Quantity]
-    action_space = gym.spaces.Box(low=numpy.array([-1.0, 0.0]), high=numpy.array([1.0, 1.0]), shape=(2,))
+    action_space = gym.spaces.Box(low=-1.0, high=1.0, shape=(1,))
     observation_space = gym.spaces.Box(low=-1.0, high=1.0, shape=(16,))
     # Reward range default of -inf -> +inf is suitable so we don't need to do anything
 
@@ -30,13 +30,12 @@ class TradingEnvironment(gym.Env):
         return self.data[self.curr_pos+16]
 
     def _execute_action(self, action, curr_price):
-        kind = action[0]
-        quantity = action[1]
+        quantity = action[0]
 
-        if kind > 0.33: #Buy
-            self.curr_balance_btc += curr_price / quantity * self.curr_balance_usd
+        if quantity > 0 and self.curr_balance_usd > 0: #Buy
+            self.curr_balance_btc += curr_price / (quantity * self.curr_balance_usd)
             self.curr_balance_usd -= quantity * self.curr_balance_usd
-        elif kind < -0.33: #Sell
+        elif quantity < 0 and self.curr_balance_btc > 0: #Sell
             self.curr_balance_btc -= quantity * self.curr_balance_btc
             self.curr_balance_usd += curr_price * quantity * self.curr_balance_btc
 
