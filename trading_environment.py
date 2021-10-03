@@ -18,13 +18,14 @@ class TradingEnvironment(gym.Env):
     # Reward range default of -inf -> +inf is suitable so we don't need to do anything
 
     def __init__(self, init_balance_usd=20.0, data_csv='data/gemini_BTCUSD_1hr.csv'):
-        self.data = convert_to_relative(pandas.read_csv(data_csv)['Close'].to_numpy())
+        self.data = numpy.flip(pandas.read_csv(data_csv)['Close'].to_numpy())
+        self.relative_data = convert_to_relative(self.data)
         self.init_balance_usd = init_balance_usd
 
         self.reset()
 
     def _get_observation(self):
-        return self.data[self.curr_pos:self.curr_pos+16]
+        return self.relative_data[self.curr_pos:self.curr_pos+16]
 
     def _get_current_price(self):
         return self.data[self.curr_pos+16]
@@ -32,10 +33,10 @@ class TradingEnvironment(gym.Env):
     def _execute_action(self, action, curr_price):
         quantity = action[0]
 
-        if quantity > 0 and self.curr_balance_usd > 0: #Buy
-            self.curr_balance_btc += curr_price / (quantity * self.curr_balance_usd)
+        if quantity > 0.0 and self.curr_balance_usd > 0.0: #Buy
+            self.curr_balance_btc += (quantity * self.curr_balance_usd) / curr_price
             self.curr_balance_usd -= quantity * self.curr_balance_usd
-        elif quantity < 0 and self.curr_balance_btc > 0: #Sell
+        elif quantity < 0.0 and self.curr_balance_btc > 0.0: #Sell
             self.curr_balance_btc -= quantity * self.curr_balance_btc
             self.curr_balance_usd += curr_price * quantity * self.curr_balance_btc
 
