@@ -23,7 +23,7 @@ class TradingEnvironment(gym.Env):
     # Reward range default of -inf -> +inf is suitable so we don't need to do anything
 
     def __init__(self, init_balance_usd=20.0, data_csv='data/gemini_BTCUSD_1hr.csv'):
-        self.data = numpy.flip(pandas.read_csv(data_csv)['Close'].to_numpy())[:1000]
+        self.data = numpy.flip(pandas.read_csv(data_csv)['Close'].to_numpy())
         self.relative_data = convert_to_relative(self.data)
         self.init_balance_usd = init_balance_usd
 
