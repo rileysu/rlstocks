@@ -33,12 +33,12 @@ class TradingEnvironment(gym.Env):
     def _execute_action(self, action, curr_price):
         quantity = action[0]
 
-        if quantity > 0.0 and self.curr_balance_usd > 0.0: #Buy
+        if quantity > 0.01 and self.curr_balance_usd > 0.0: #Buy
             self.curr_balance_btc += (quantity * self.curr_balance_usd) / curr_price
             self.curr_balance_usd -= quantity * self.curr_balance_usd
-        elif quantity < 0.0 and self.curr_balance_btc > 0.0: #Sell
-            self.curr_balance_btc -= quantity * self.curr_balance_btc
-            self.curr_balance_usd += curr_price * quantity * self.curr_balance_btc
+        elif quantity < -0.01 and self.curr_balance_btc > 0.0: #Sell
+            self.curr_balance_btc -= -quantity * self.curr_balance_btc
+            self.curr_balance_usd += curr_price * -quantity * self.curr_balance_btc
 
         #Otherwise nothing
 
