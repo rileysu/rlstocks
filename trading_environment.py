@@ -50,7 +50,7 @@ class TradingEnvironment(gym.Env):
         reward = self.curr_balance_usd
 
         self.curr_pos += 1
-        self.done = self.curr_pos + 16 >= len(self.data) or (self.curr_balance_btc <= 0.0 and self.curr_balance_usd <= 0.0)
+        self.done = (self.curr_pos + 16) >= len(self.data) or ((self.curr_balance_btc * self._get_current_price() + self.curr_balance_usd) <= 0.50)
         done = self.done
 
         info = {}

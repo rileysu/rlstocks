@@ -7,7 +7,7 @@ from trading_environment import TradingEnvironment
 env = TradingEnvironment()
 
 model = DDPG("MlpPolicy", env, verbose=2)
-model.learn(total_timesteps=1)
+model.learn(total_timesteps=100)
 
 obs = env.reset()
 for i in range(1000):
