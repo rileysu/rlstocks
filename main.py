@@ -1,13 +1,13 @@
 import gym
 
-from stable_baselines3 import DDPG
+from stable_baselines3 import TD3
 
 from trading_environment import TradingEnvironment
 
 env = TradingEnvironment()
 
-model = DDPG("MlpPolicy", env, verbose=2, learning_rate=0.001)
-model.learn(total_timesteps=500)
+model = TD3("MlpPolicy", env, verbose=2, learning_rate=0.001)
+model.learn(total_timesteps=1000)
 
 obs = env.reset()
 for i in range(6000):

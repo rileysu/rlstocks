@@ -11,6 +11,10 @@ matplotlib = "^3.4.3"
 gym = "^0.20.0"
 stable-baselines3 = "^1.2.0"
 pyglet = "^1.5.21"
+dm-acme = {extras = ["tensorflow"], version = "^0.2.2"}
+keras = "^2.6.0"
+tensorflow = "^2.6.0"
+scikit-learn = "^1.0"
 
 [tool.poetry.dev-dependencies]
 

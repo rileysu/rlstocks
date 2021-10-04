@@ -2,17 +2,17 @@ import gym
 import pandas
 import numpy
 
-def convert_to_relative(prices):
+def generate_relative_frame(prices):
+    ref_price = prices[0]
     relative_prices = [0.0]
-    for i in range(1, len(prices)):
-        relative_prices.append(1.0 - (prices[i] / prices[i-1]))
+
+    for price in prices[1:]:
+        relative_prices.append(price / ref_price  - 1.0)
 
     relative_prices = numpy.array(relative_prices)
 
-    mean = numpy.mean(relative_prices)
-    std = numpy.std(relative_prices)
+    return relative_prices * 100
 
-    return (relative_prices - mean) / std
 
 class TradingEnvironment(gym.Env):
     # Action Kinds = [Sell < -0.33, Hold otherwise, Buy > 0.33]
@@ -24,13 +24,12 @@ class TradingEnvironment(gym.Env):
 
     def __init__(self, init_balance_usd=20.0, data_csv='data/gemini_BTCUSD_1hr.csv'):
         self.data = numpy.flip(pandas.read_csv(data_csv)['Close'].to_numpy())
-        self.relative_data = convert_to_relative(self.data)
         self.init_balance_usd = init_balance_usd
 
         self.reset()
 
     def _get_observation(self):
-        return self.relative_data[self.curr_pos:self.curr_pos+16]
+        return generate_relative_frame(self.data[self.curr_pos:self.curr_pos+16])
 
     def _get_current_price(self):
         return self.data[self.curr_pos+16]
@@ -52,7 +51,7 @@ class TradingEnvironment(gym.Env):
 
         self._execute_action(action, self._get_current_price())
 
-        reward = self.curr_balance_usd
+        reward = (self.curr_balance_btc * self._get_current_price() + self.curr_balance_usd)
 
         self.curr_pos += 1
         self.done = (self.curr_pos + 16) >= (len(self.data) - 1) or ((self.curr_balance_btc * self._get_current_price() + self.curr_balance_usd) <= 0.50)
