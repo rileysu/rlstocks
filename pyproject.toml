@@ -15,6 +15,7 @@ dm-acme = {extras = ["tensorflow"], version = "^0.2.2"}
 keras = "^2.6.0"
 tensorflow = "^2.6.0"
 scikit-learn = "^1.0"
+tqdm = "^4.62.3"
 
 [tool.poetry.dev-dependencies]
 
